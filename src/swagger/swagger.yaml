@@ -4,13 +4,13 @@ info:
   version: 1.0.0
   description: API documentation for managing gadgets in the inventory. Includes CRUD operations for gadgets, with additional self-destruct functionality.
 servers:
-  - url: http://localhost:3000
-    description: Local development server
+  - url: https://imf-gadget-production.up.railway.app/
+    description: Production server
 
 components:
   securitySchemes:
     BearerAuth:  
-      type: http
+      type: https
       scheme: bearer
       bearerFormat: JWT 
       description: Use the Authorization header with the Bearer token to authenticate.

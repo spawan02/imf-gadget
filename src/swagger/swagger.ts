@@ -15,16 +15,16 @@ const swaggerOptions = {
     },
     servers: [
       {
-        url: 'http://localhost:3000',
-        description: 'Local development server',
+        url: 'https://imf-gadget-production.up.railway.app/',
+        description: 'Production server on Railway',
       },
     ],
   },
-  apis: ['./src/routes/*.ts'],
+  apis: ['./src/routes/*.ts'], 
 };
 
 const swaggerDocs = swaggerJSDoc(swaggerOptions);
 
 export const setupSwaggerDocs = (app: Express) => {
-  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));  
+  app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));  
 };
