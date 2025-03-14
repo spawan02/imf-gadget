@@ -2,6 +2,9 @@ import express from "express"
 import dotenv from "dotenv"
 import cors from "cors"
 
+import { PrismaClient } from '@prisma/client';
+
+const db = new PrismaClient()
 const app = express()
 const PORT = 3000;
 
