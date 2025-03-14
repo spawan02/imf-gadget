@@ -2,7 +2,7 @@ import express from "express";
 import { signInSchema, signUpSchema } from "../validation/userSchema";
 import { comparePassword, hashPassword } from "../utils";
 import prisma from "../prismaClient";
-import jwt from "jsonwebtoken"
+import jwt from "jsonwebtoken";
 
 const router = express.Router();
 const JWT_PASSWORD = process.env.JWT_PASSWORD || "password";
@@ -40,45 +40,45 @@ router.post("/signup", async (req, res) => {
     }
 });
 
-
-router.post('/signin', async(req,res)=>{
-    
-    const validation = signInSchema.safeParse(req.body)
-    if(!validation.success){
+router.post("/signin", async (req, res) => {
+    const validation = signInSchema.safeParse(req.body);
+    if (!validation.success) {
         res.status(404).json({
-            message: "Incorrect Details"
-        })
-        return
+            message: "Incorrect Details",
+        });
+        return;
     }
-    try{
+    try {
         const user = await prisma.user.findUnique({
-            where:{
-                username: validation.data.username
-            }
-        })
-        if(!user){
+            where: {
+                username: validation.data.username,
+            },
+        });
+        if (!user) {
             res.status(404).json({
-                message: "User not found"
-            })
-            return
+                message: "User not found",
+            });
+            return;
         }
-        const valid = await comparePassword(validation.data.password, user.password)
-        if(!valid){
+        const valid = await comparePassword(validation.data.password, user.password);
+        if (!valid) {
             res.status(404).json({
-                mes: "Incorrect password"
-            })
-            return
+                mes: "Incorrect password",
+            });
+            return;
         }
-        const token = jwt.sign({
-            userId: user.id,
-            role: user.role
-        },JWT_PASSWORD)
-        res.status(200).json({token})
-
-    }catch(e){
-        res.status(400).json({  
-            message: "Internal Error"
-        })
+        const token = jwt.sign(
+            {
+                userId: user.id,
+                role: user.role,
+            },
+            JWT_PASSWORD
+        );
+        res.status(200).json({ token });
+    } catch (e) {
+        res.status(400).json({
+            message: "Internal Error",
+        });
     }
-})
-export default router
+});
+export default router;

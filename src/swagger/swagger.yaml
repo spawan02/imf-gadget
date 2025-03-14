@@ -18,7 +18,7 @@ components:
 
 
 paths:
-  /api/signup:
+  /api/user/signup:
     post:
       summary: User registration (sign up)
       description: Allows users to register by providing a username and password.
@@ -65,7 +65,7 @@ paths:
         500:
           description: Internal server error
 
-  /api/signin:
+  /api/user/signin:
     post:
       summary: User login (sign in)
       description: Allows users to login by providing a username and password. Returns a JWT token upon successful authentication.
@@ -169,7 +169,7 @@ paths:
       security:
         - BearerAuth: []  # JWT token required for this route
       requestBody:
-        required: true
+        required: false
         content:
           application/json:
             schema:
@@ -221,7 +221,7 @@ paths:
             schema:
               type: object
               properties:
-                name:
+                uuid:
                   type: string
                 status:
                   type: string

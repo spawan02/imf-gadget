@@ -4,23 +4,20 @@ const generateProbability = (): number => {
     return Math.floor(Math.random() * (100 - 50 + 1)) + 50;
 };
 
-const codenames = [
-    "The Kraken",
-    "The Nightingale",
-    "The Viper",
-    "The Phantom",
-    "The Hydra",
-    "The Griffin",
-    "The Falcon",
-    "The Hawk",
-    "The Raven",
-    "The Panther",
-];
+const generateCodename = () => {
+  const adjectives = [
+      "Mighty", "Silent", "Fierce", "Brave", "Swift", "Stealthy", "Legendary", "Royal", "Invisible", "Shadow", "Thunder", "Phantom", "Eternal"
+  ];
+  const animals = [
+      "Wolf", "Eagle", "Tiger", "Lion", "Falcon", "Dragon", "Bear", "Cheetah", "Shark", "Rhino", "Panther", "Jaguar", "Phoenix"
+  ];
 
-const generateCodename = (): string => {
-    const randomIndex = Math.floor(Math.random() * codenames.length);
-    return codenames[randomIndex];
+  const adjective = adjectives[Math.floor(Math.random() * adjectives.length)];
+  const animal = animals[Math.floor(Math.random() * animals.length)];
+
+  return `${adjective} ${animal}`;
 };
+
 
 function generateConfirmationCode(): string {
     return uuidv4();

@@ -1,7 +1,11 @@
 import { Request, Response } from "express";
 import { Gadget } from "../types/interface";
 import { generateProbability, generateCodename } from "../utils/util";
-import {gadgetSchema, uuidValidator, statusSchema} from "../validation/gadgetSchema";
+import {
+    gadgetSchema,
+    uuidValidator,
+    statusSchema,
+} from "../validation/gadgetSchema";
 
 import prisma from "../prismaClient";
 
@@ -40,7 +44,6 @@ const getGadgets = async (req: Request, res: Response) => {
 
 const createGadget = async (req: Request, res: Response) => {
     try {
-        
         const codename = generateCodename();
         const missionProbability = generateProbability();
         const newGadget = await prisma.gadget.create({
@@ -65,7 +68,7 @@ const updateGadget = async (req: Request, res: Response) => {
     const validation = gadgetSchema.safeParse(req.body);
     if (!uuid.success) {
         res.status(404).json({
-            message: "UUID is wrong",
+            message: "UUID is missing",
         });
         return;
     }
