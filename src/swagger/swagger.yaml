@@ -9,13 +9,11 @@ servers:
 
 components:
   securitySchemes:
-    BearerAuth:  
-      type: https
+    BearerAuth:
+      type: http
       scheme: bearer
-      bearerFormat: JWT 
+      bearerFormat: JWT
       description: Use the Authorization header with the Bearer token to authenticate.
-
-
 
 paths:
   /api/user/signup:
@@ -131,7 +129,7 @@ paths:
               - Destroyed
               - Decommissioned
       responses:
-        '200':
+        "200":
           description: Successfully retrieved the list of gadgets.
           content:
             application/json:
@@ -158,16 +156,16 @@ paths:
                         missionSuccessProbability:
                           type: integer
                           description: A randomly generated success probability (percentage).
-        '400':
+        "400":
           description: Bad Request - Invalid query parameters.
-        '500':
+        "500":
           description: Internal server error.
 
     post:
       summary: Add a new gadget to the inventory
       description: Create a new gadget in the inventory with a randomly generated codename and mission success probability.
       security:
-        - BearerAuth: []  # JWT token required for this route
+        - BearerAuth: [] # JWT token required for this route
       requestBody:
         required: false
         content:
@@ -187,7 +185,7 @@ paths:
                     - Decommissioned
                   description: The status of the gadget (initially set to "Available").
       responses:
-        '201':
+        "201":
           description: Gadget successfully created.
           content:
             application/json:
@@ -197,7 +195,7 @@ paths:
                   message:
                     type: string
                     description: ID of the created gadget.
-        '500':
+        "500":
           description: Internal server error.
 
   /api/gadgets/{id}:
@@ -205,7 +203,7 @@ paths:
       summary: Update an existing gadget's information
       description: Update the name and status of a gadget using its ID.
       security:
-        - BearerAuth: []  # JWT token required for this route
+        - BearerAuth: [] # JWT token required for this route
       parameters:
         - name: id
           in: path
@@ -231,7 +229,7 @@ paths:
                     - Destroyed
                     - Decommissioned
       responses:
-        '200':
+        "200":
           description: Successfully updated the gadget.
           content:
             application/json:
@@ -247,16 +245,16 @@ paths:
                     type: string
                   missionSuccessProbability:
                     type: integer
-        '404':
+        "404":
           description: Gadget not found.
-        '500':
+        "500":
           description: Internal server error.
 
     delete:
       summary: Decommission a gadget (mark as "Decommissioned")
       description: Instead of deleting a gadget, it is marked as "Decommissioned" with a timestamp.
       security:
-        - BearerAuth: []  # JWT token required for this route
+        - BearerAuth: [] # JWT token required for this route
       parameters:
         - name: id
           in: path
@@ -266,7 +264,7 @@ paths:
             type: string
             format: uuid
       responses:
-        '200':
+        "200":
           description: Gadget successfully decommissioned.
           content:
             application/json:
@@ -276,9 +274,9 @@ paths:
                   decommissionedAt:
                     type: string
                     format: date-time
-        '404':
+        "404":
           description: Gadget not found.
-        '500':
+        "500":
           description: Internal server error.
 
   /api/gadgets/{id}/self-destruct:
@@ -286,7 +284,7 @@ paths:
       summary: Trigger the self-destruct sequence for a specific gadget
       description: Mark a gadget as "Destroyed". A randomly generated confirmation code is required for this operation.
       security:
-        - BearerAuth: []  # JWT token required for this route
+        - BearerAuth: [] # JWT token required for this route
       parameters:
         - name: id
           in: path
@@ -306,7 +304,7 @@ paths:
                   type: string
                   description: The randomly generated confirmation code for the self-destruct sequence.
       responses:
-        '200':
+        "200":
           description: Successfully triggered the self-destruct sequence.
           content:
             application/json:
@@ -316,9 +314,9 @@ paths:
                   status:
                     type: string
                     description: The final status of the gadget (e.g., "Destroyed").
-        '400':
+        "400":
           description: Invalid confirmation code.
-        '404':
+        "404":
           description: Gadget not found.
-        '500':
+        "500":
           description: Internal server error.
