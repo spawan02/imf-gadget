@@ -15,11 +15,23 @@ datasource db {
 
 model Gadget {
   id                        String       @id @default(uuid())
-  name                      String
+  name                      String?
   codename                  String       @unique
   missionSuccessProbability Int
   status                    GadgetStatus @default(Available)
   deCommissionedAt          DateTime?
+}
+
+model User {
+  id       String  @id @unique @default(cuid())
+  username String  @unique
+  password String
+  role     Role
+}
+
+enum Role {
+  Admin
+  User
 }
 
 enum GadgetStatus {
