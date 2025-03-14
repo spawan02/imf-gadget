@@ -4,7 +4,7 @@ info:
   version: 1.0.0
   description: API documentation for managing gadgets in the inventory. Includes CRUD operations for gadgets, with additional self-destruct functionality.
 servers:
-  - url: https://imf-gadget-production.up.railway.app/
+  - url: https://imf.itsarc.me/
     description: Production server
 
 components:

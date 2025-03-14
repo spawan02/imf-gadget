@@ -15,7 +15,7 @@ const swaggerOptions = {
     },
     servers: [
       {
-        url: 'https://imf-gadget-production.up.railway.app/',
+        url: 'https://imf.itsarc.me/',
         description: 'Production server on Railway',
       },
     ],
