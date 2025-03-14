@@ -1,0 +1,324 @@
+openapi: 3.0.0
+info:
+  title: Gadget Inventory API
+  version: 1.0.0
+  description: API documentation for managing gadgets in the inventory. Includes CRUD operations for gadgets, with additional self-destruct functionality.
+servers:
+  - url: http://localhost:3000
+    description: Local development server
+
+components:
+  securitySchemes:
+    BearerAuth:  
+      type: http
+      scheme: bearer
+      bearerFormat: JWT 
+      description: Use the Authorization header with the Bearer token to authenticate.
+
+
+
+paths:
+  /api/signup:
+    post:
+      summary: User registration (sign up)
+      description: Allows users to register by providing a username and password.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  example: johndoe
+                password:
+                  type: string
+                  example: password123
+                type:
+                  type: string
+                  enum:
+                    - admin
+                    - user
+                  example: user
+      responses:
+        200:
+          description: Successfully created user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  userId:
+                    type: integer
+                    example: 1
+        400:
+          description: Invalid input or user already exists
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Invalid Entry"
+        500:
+          description: Internal server error
+
+  /api/signin:
+    post:
+      summary: User login (sign in)
+      description: Allows users to login by providing a username and password. Returns a JWT token upon successful authentication.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  example: johndoe
+                password:
+                  type: string
+                  example: password123
+      responses:
+        200:
+          description: Successfully authenticated, returns a JWT token
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    example: "your-jwt-token-here"
+        404:
+          description: User not found or incorrect password
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "User not found"
+        400:
+          description: Invalid input or internal error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Incorrect Details"
+
+  /api/gadgets:
+    get:
+      summary: Retrieve a list of all gadgets
+      description: Retrieve all gadgets in the inventory, optionally filtered by status. Each gadget includes a randomly generated "mission success probability".
+      parameters:
+        - name: status
+          in: query
+          description: The status to filter gadgets by. Can be "Available", "Deployed", "Destroyed", or "Decommissioned".
+          required: false
+          schema:
+            type: string
+            enum:
+              - Available
+              - Deployed
+              - Destroyed
+              - Decommissioned
+      responses:
+        '200':
+          description: Successfully retrieved the list of gadgets.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  gadgets:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        codename:
+                          type: string
+                        status:
+                          type: string
+                          enum:
+                            - Available
+                            - Deployed
+                            - Destroyed
+                            - Decommissioned
+                        missionSuccessProbability:
+                          type: integer
+                          description: A randomly generated success probability (percentage).
+        '400':
+          description: Bad Request - Invalid query parameters.
+        '500':
+          description: Internal server error.
+
+    post:
+      summary: Add a new gadget to the inventory
+      description: Create a new gadget in the inventory with a randomly generated codename and mission success probability.
+      security:
+        - BearerAuth: []  # JWT token required for this route
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: The name of the gadget.
+                status:
+                  type: string
+                  enum:
+                    - Available
+                    - Deployed
+                    - Destroyed
+                    - Decommissioned
+                  description: The status of the gadget (initially set to "Available").
+      responses:
+        '201':
+          description: Gadget successfully created.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: ID of the created gadget.
+        '500':
+          description: Internal server error.
+
+  /api/gadgets/{id}:
+    patch:
+      summary: Update an existing gadget's information
+      description: Update the name and status of a gadget using its ID.
+      security:
+        - BearerAuth: []  # JWT token required for this route
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The ID of the gadget to update.
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                status:
+                  type: string
+                  enum:
+                    - Available
+                    - Deployed
+                    - Destroyed
+                    - Decommissioned
+      responses:
+        '200':
+          description: Successfully updated the gadget.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  codename:
+                    type: string
+                  status:
+                    type: string
+                  missionSuccessProbability:
+                    type: integer
+        '404':
+          description: Gadget not found.
+        '500':
+          description: Internal server error.
+
+    delete:
+      summary: Decommission a gadget (mark as "Decommissioned")
+      description: Instead of deleting a gadget, it is marked as "Decommissioned" with a timestamp.
+      security:
+        - BearerAuth: []  # JWT token required for this route
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The ID of the gadget to decommission.
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Gadget successfully decommissioned.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  decommissionedAt:
+                    type: string
+                    format: date-time
+        '404':
+          description: Gadget not found.
+        '500':
+          description: Internal server error.
+
+  /api/gadgets/{id}/self-destruct:
+    post:
+      summary: Trigger the self-destruct sequence for a specific gadget
+      description: Mark a gadget as "Destroyed". A randomly generated confirmation code is required for this operation.
+      security:
+        - BearerAuth: []  # JWT token required for this route
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The ID of the gadget to trigger the self-destruct sequence.
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                confirmationCode:
+                  type: string
+                  description: The randomly generated confirmation code for the self-destruct sequence.
+      responses:
+        '200':
+          description: Successfully triggered the self-destruct sequence.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: The final status of the gadget (e.g., "Destroyed").
+        '400':
+          description: Invalid confirmation code.
+        '404':
+          description: Gadget not found.
+        '500':
+          description: Internal server error.
